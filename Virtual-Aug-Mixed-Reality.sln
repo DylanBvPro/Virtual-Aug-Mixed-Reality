@@ -1,0 +1,39 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project-1", "Project-1", "{3557819C-C9F7-35E0-732D-69993D6F582A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project-1 AR Knick-knack", "Project-1 AR Knick-knack", "{54FD9FCD-7548-F81B-2956-E168D8FF4DCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Project-1\Project-1 AR Knick-knack\Assembly-CSharp-Editor.csproj", "{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Project-1\Project-1 AR Knick-knack\Assembly-CSharp.csproj", "{E4BC16A6-06F9-9D82-2505-521615934B69}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4BC16A6-06F9-9D82-2505-521615934B69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4BC16A6-06F9-9D82-2505-521615934B69}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4BC16A6-06F9-9D82-2505-521615934B69}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4BC16A6-06F9-9D82-2505-521615934B69}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{54FD9FCD-7548-F81B-2956-E168D8FF4DCA} = {3557819C-C9F7-35E0-732D-69993D6F582A}
+		{473DC29F-BB5C-41BF-CE3B-8313EE0CC8A1} = {54FD9FCD-7548-F81B-2956-E168D8FF4DCA}
+		{E4BC16A6-06F9-9D82-2505-521615934B69} = {54FD9FCD-7548-F81B-2956-E168D8FF4DCA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {65D64749-7F1A-4E51-BBA4-39BABDCA3FBC}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,27 @@
+# Unity strict allowlist: keep only user-authored project content.
+# Everything is ignored by default, then we explicitly include what we want to track.
+*
+
+# Keep this file
+!.gitignore
+
+# Keep all user-created/modified assets (scenes, prefabs, scripts, materials, textures, etc.)
+!Assets/
+!Assets/**
+
+# Remove Vuforia Engine-related assets from tracking
+Assets/**/Vuforia/
+Assets/**/Vuforia/**
+QCAR/
+QCAR/**
+Assets/Editor/Migration/com.ptc.vuforia.engine-11.4.4.tgz
+Assets/Editor/Migration/com.ptc.vuforia.engine-11.4.4.tgz.meta
+
+# Keep package definitions required to restore dependencies
+!Packages/
+!Packages/manifest.json
+!Packages/packages-lock.json
+
+# Keep full project settings for reproducible project behavior on other machines
+!ProjectSettings/
+!ProjectSettings/**
