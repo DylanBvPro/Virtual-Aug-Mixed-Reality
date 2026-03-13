@@ -5,13 +5,29 @@ using TMPro;
 
 public class WeatherAPI : MonoBehaviour
 {
+    [Header("UI Elements")]
     public GameObject weatherTextObject;
     [SerializeField] private TMP_Text weatherText;
 
+    [Header("Weather Objects")]
+    public GameObject rainObject;
+    public GameObject sunnyObject;
+    public GameObject cloudyObject;
+    public GameObject snowObject;
+
+    [Header("Weather API Settings")]
     [SerializeField] private string apiKey = "54ee13e951f71304aa6f07db52079f66";
-    [SerializeField] private float latitude = 39.132061f;
-    [SerializeField] private float longitude = -84.515541f;
+    [SerializeField] private float latitude = 38.5367471f;
+    [SerializeField] private float longitude = -82.6829406f;
     private const string BaseUrl = "https://api.openweathermap.org/data/2.5/weather";
+
+    [Header("Manual Override")]
+    [Tooltip("Leave empty to use API weather. Options: rain, snow, sunny, cloudy")]
+    public string manualWeather = "";
+
+    private string lastKnownApiCondition = "unknown";
+    private int lastKnownTempF = 0;
+    private string currentCondition = "unknown";
 
     [System.Serializable]
     private class WeatherResponse
@@ -34,26 +50,19 @@ public class WeatherAPI : MonoBehaviour
         public string main;
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        Debug.Log("Weather API: Display Weather");
-
         if (weatherText == null)
         {
             if (weatherTextObject != null)
             {
                 weatherText = weatherTextObject.GetComponent<TMP_Text>();
                 if (weatherText == null)
-                {
                     weatherText = weatherTextObject.GetComponentInChildren<TMP_Text>(true);
-                }
             }
 
             if (weatherText == null)
-            {
                 weatherText = GetComponent<TMP_Text>();
-            }
         }
 
         if (string.IsNullOrWhiteSpace(apiKey))
@@ -62,9 +71,8 @@ public class WeatherAPI : MonoBehaviour
             return;
         }
 
-        // wait a couple seconds to start and then refresh every 900 seconds
-
-       InvokeRepeating("GetDataFromWeb", 2f, 900f);
+        // Refresh weather every 15 minutes
+        InvokeRepeating("GetDataFromWeb", 2f, 900f);
     }
 
     private string BuildWeatherUrl()
@@ -81,9 +89,7 @@ public class WeatherAPI : MonoBehaviour
     {
         using (UnityWebRequest webRequest = UnityWebRequest.Get(uri))
         {
-            // Request and wait for the desired page.
             yield return webRequest.SendWebRequest();
-
 
             if (webRequest.result != UnityWebRequest.Result.Success)
             {
@@ -93,9 +99,8 @@ public class WeatherAPI : MonoBehaviour
             }
 
             string json = webRequest.downloadHandler.text;
-            Debug.Log(":\nReceived: " + json);
-
             WeatherResponse response = JsonUtility.FromJson<WeatherResponse>(json);
+
             if (response == null || response.main == null)
             {
                 Debug.LogError("Weather API JSON parse failed. Check API key and response format.");
@@ -103,24 +108,86 @@ public class WeatherAPI : MonoBehaviour
             }
 
             int easyTempF = Mathf.RoundToInt(response.main.temp);
-            string conditions = (response.weather != null && response.weather.Length > 0)
-                ? response.weather[0].main
-                : "Unknown";
+            lastKnownTempF = easyTempF;
+            string apiCondition = (response.weather != null && response.weather.Length > 0)
+                ? response.weather[0].main.ToLower()
+                : "unknown";
+            lastKnownApiCondition = apiCondition;
 
-            if (weatherText == null)
+            // Decide the final condition: manual override takes precedence
+            string finalCondition = string.IsNullOrWhiteSpace(manualWeather) ? apiCondition : manualWeather.ToLower();
+            currentCondition = finalCondition;
+
+            // Update weather text
+            if (weatherText != null)
             {
-                Debug.LogError("No TMP_Text found. Assign Weather Text in the inspector, or set weatherTextObject to a GameObject that has (or contains) a TextMeshProUGUI/TextMeshPro component.");
-                yield break;
+                weatherText.text = easyTempF + "°F\n" + finalCondition;
             }
 
-            weatherText.text = easyTempF + "°F\n" + conditions;
+            // Update objects based on condition
+            UpdateWeatherObjects(finalCondition);
         }
     }
 
-
-    // Update is called once per frame
-    void Update()
+    public void SetManualWeather(string condition)
     {
-        
+        manualWeather = string.IsNullOrWhiteSpace(condition) ? "" : condition.Trim().ToLower();
+        ApplyCurrentCondition();
+    }
+
+    public void ClearManualWeather()
+    {
+        manualWeather = "";
+        ApplyCurrentCondition();
+    }
+
+    private void ApplyCurrentCondition()
+    {
+        string finalCondition = string.IsNullOrWhiteSpace(manualWeather)
+            ? lastKnownApiCondition
+            : manualWeather;
+        currentCondition = finalCondition;
+
+        if (weatherText != null)
+        {
+            weatherText.text = lastKnownTempF + "°F\n" + finalCondition;
+        }
+
+        UpdateWeatherObjects(finalCondition);
+    }
+
+    public string GetCurrentCondition()
+    {
+        return currentCondition;
+    }
+
+    private void UpdateWeatherObjects(string condition)
+    {
+        // Disable all first
+        if (rainObject != null) rainObject.SetActive(false);
+        if (sunnyObject != null) sunnyObject.SetActive(false);
+        if (cloudyObject != null) cloudyObject.SetActive(false);
+        if (snowObject != null) snowObject.SetActive(false);
+
+        // Enable objects depending on condition
+        if (condition.Contains("rain") || condition.Contains("drizzle") || condition.Contains("thunderstorm"))
+        {
+            if (rainObject != null) rainObject.SetActive(true);
+        }
+
+        if (condition.Contains("snow"))
+        {
+            if (snowObject != null) snowObject.SetActive(true);
+        }
+
+        if (condition.Contains("sunny") || condition.Contains("clear"))
+        {
+            if (sunnyObject != null) sunnyObject.SetActive(true);
+        }
+
+        if (condition.Contains("clouds") || condition.Contains("cloudy"))
+        {
+            if (cloudyObject != null) cloudyObject.SetActive(true);
+        }
     }
 }
